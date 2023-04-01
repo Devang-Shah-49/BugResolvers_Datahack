@@ -8,8 +8,7 @@ import Landing from "./components/Landing";
 import Login from "./components/login";
 import Signup from "./components/signup";
 import PrivateRoute from './helpers/PrivateRoutes/PrivateRoute';
-import Widget from "./components/Widget";
-import ChartsGrid from "./components/ChartsGrid";
+import UserPage from "./components/userPage";
 import UserChart from "./components/UserChart";
 import PopChat from "./components/PopupChat";
 
@@ -22,6 +21,7 @@ function App() {
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/landing" element={<Landing />} />
+            <Route exact path="/user" element={<UserPage/>} />
 
             {/* <Route exact path="/dashboard" element={<PrivateRoute component={Login} />} >
               <Route index element={<PrivateRoute component={Landing} />} />
@@ -29,9 +29,7 @@ function App() {
               <Route exact path="doctor/bulk-create" element={<Landing />} />
             </Route> */}
             <Route path="*" element={<Navigate replace to="/landing" />} />
-          </Routes>
-          <Widget/>
-          <ChartsGrid/>
+          </Routes>          
           <h1>User Dashboard </h1>
           <UserChart/>
           <PopChat/>
