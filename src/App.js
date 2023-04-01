@@ -14,7 +14,7 @@ function App() {
     <div>
       <Router>
           <Routes>
-            <Route path="/" element={<Navigate replace to="/login" />} />
+            <Route path="/" element={<Navigate replace to="/landing" />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/landing" element={<Landing />} />
@@ -28,8 +28,6 @@ function App() {
             <Route path="*" element={<Navigate replace to="/landing" />} />
           </Routes>
         </Router>
-      <Landing />
-      <Login />
     </div>
   );
 }
