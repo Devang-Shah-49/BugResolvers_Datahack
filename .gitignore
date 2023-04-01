@@ -1,0 +1,19 @@
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code settings
+.vscode
+
+jetson-sample-data.csv
