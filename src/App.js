@@ -10,6 +10,8 @@ import Signup from "./components/signup";
 import PrivateRoute from './helpers/PrivateRoutes/PrivateRoute';
 import Widget from "./components/Widget";
 import ChartsGrid from "./components/ChartsGrid";
+import UserChart from "./components/UserChart";
+import PopChat from "./components/PopupChat";
 
 function App() {
   return (
@@ -30,6 +32,9 @@ function App() {
           </Routes>
           <Widget/>
           <ChartsGrid/>
+          <h1>User Dashboard </h1>
+          <UserChart/>
+          <PopChat/>
         </Router>
     </div>
   );
