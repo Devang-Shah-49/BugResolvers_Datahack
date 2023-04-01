@@ -48,6 +48,7 @@ const Navbar = ({logo}) => {
                   <a onClick={()=>setOpenNav(false)} href="#product" className="text-lg font-semibold text-blue-800 transition-all hover:text-orange-500">Product</a>
                   <a onClick={()=>setOpenNav(false)} href="#faq" className="text-lg font-semibold text-blue-800 transition-all hover:text-orange-500">Faq</a>
                   <a onClick={()=>setOpenNav(false)} href="#contact" className="text-lg font-semibold text-blue-800 transition-all hover:text-orange-500">Contact</a>
+                  <a onClick={()=>setOpenNav(false)} href="#contact" className="text-lg font-semibold text-blue-800 transition-all hover:text-orange-500">Login</a>
                 </div>
               </div>
           }
@@ -60,6 +61,7 @@ const Navbar = ({logo}) => {
               <a href="#product" className="text-lg font-semibold text-blue-800 transition-all hover:text-orange-500">Product</a>
               <a href="#faq" className="text-lg font-semibold text-blue-800 transition-all hover:text-orange-500">Faq</a>
               <a href="#contact" className="text-lg font-semibold text-blue-800 transition-all hover:text-orange-500">Contact</a>
+              <button className="pt-1 pb-2 pl-10 pr-10 text-xl font-semibold text-center text-white transition-all bg-orange-600 rounded-full shadow-2xl lg:ml-5 hover:bg-orange-700 focus:outline-none ring-4 ring-orange-600 lg:ring-2 lg:font-medium ">Login</button>
           </div>
 
     </div>

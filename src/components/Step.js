@@ -12,7 +12,7 @@ const Step = ({title, heading, description, img, alternate}) => {
             <p className="p-5 pb-0 pl-10 pr-10 text-2xl leading-10 text-center text-gray-400 lg:w-5/6 lg:pb-0 lg:text-lg lg:text-left lg:p-0 lg:pl-0 lg:pr-0">{description}</p>
           </div>
           <div className="ml-10 lg:ml-0 lg:w-3/6">
-            <img className=" lg:-mt-24 lg:-mb-20" src={img} alt=""/>
+            <img className=" lg:-mt-24 lg:-mb-20" src={img} alt="" style={{overflowX:"hidden"}}/>
           </div>
         </div>
     )
