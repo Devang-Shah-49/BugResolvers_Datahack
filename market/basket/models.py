@@ -125,3 +125,12 @@ class AssociationRules(models.Model):
 
     def __str__(self):
         return self.confidence
+    
+class RFMTable(models.Model):
+    rfm_segment = models.CharField(max_length=100, unique=True)
+    recency = models.FloatField()
+    frequency = models.FloatField()
+    monetary = models.FloatField()
+
+    def __str__(self):
+        return self.rfm_segment

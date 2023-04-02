@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Product, Order, OrderItem, MarketBasketCharts, AssociationRules
+from .models import User, Product, Order, OrderItem, MarketBasketCharts, AssociationRules, RFMTable
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,4 +29,9 @@ class MarketBasketChartsSerializer(serializers.ModelSerializer):
 class AssociationRulesSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssociationRules
+        fields = '__all__'
+
+class RFMTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RFMTable
         fields = '__all__'

@@ -2,8 +2,8 @@ import pandas as pd
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sklearn.cluster import KMeans
-from .serializers import AssociationRulesSerializer, MarketBasketChartsSerializer, UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
-from .models import AssociationRules, MarketBasketCharts, User, Product, Order, OrderItem, Coupon
+from .serializers import AssociationRulesSerializer, MarketBasketChartsSerializer, RFMTableSerializer, UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
+from .models import AssociationRules, MarketBasketCharts, RFMTable, User, Product, Order, OrderItem, Coupon
 
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -42,7 +42,7 @@ def send_email(data):
 
 @api_view(['GET'])
 def get_user(request):
-    reader = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    reader = pd.read_csv(r'market\jetson-sample-data.csv')
     for i in range(len(reader["client_id"])):
         slist = reader["date"][i].split("-")
         sdate = datetime.date(int(slist[0]),int(slist[1]),int(slist[2]))
@@ -117,15 +117,15 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
 def gpt_query(question):
-#   loader = UnstructuredFileLoader(file_path=r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\sales_data_preprocessed.txt')
+#   loader = UnstructuredFileLoader(file_path=r'market\sales_data_preprocessed.txt')
 #   documents = loader.load()
 #   documents = loader.load()
   embeddings = OpenAIEmbeddings(openai_api_key="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")
 #   text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 #   texts = text_splitter.split_documents(documents)
-#   db = Chroma.from_documents(texts, embeddings,persist_directory = r'C:/Users/savla/DjangoProjects/BugResolvers_Datahack/market/devang')
+#   db = Chroma.from_documents(texts, embeddings,persist_directory = r'market\devang')
 #   db.persist()
-  vectordb = Chroma(persist_directory=r'C:/Users/savla/DjangoProjects/BugResolvers_Datahack/market/devang',embedding_function=embeddings)
+  vectordb = Chroma(persist_directory=r'market\devang',embedding_function=embeddings)
   qa = VectorDBQA.from_chain_type(llm=ChatOpenAI(openai_api_key="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"), chain_type="stuff", vectorstore=vectordb, k=10)
   return str(qa.run(question))
 
@@ -141,7 +141,7 @@ def num(x):
         return 1
 
 def analyse():
-    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    df = pd.read_csv(r'market\jetson-sample-data.csv')
     data_apr = df.groupby(["order_id", "item_name"])[["quantity"]].sum().unstack().reset_index().fillna(0).set_index("order_id")
     basket_new = data_apr["quantity"].applymap(num)
     apr = apriori(basket_new, min_support = 0.02, use_colnames = True)
@@ -152,7 +152,7 @@ def analyse():
 
 @api_view(['GET'])
 def rfm_table(request):
-    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    '''df = pd.read_csv('jetson-sample-data.csv')
     today = datetime.datetime.today()
     df["date"] = pd.to_datetime(df["date"])
     rec_table = df.groupby(["client_id"]).agg({"date": lambda x: ((today - x.max()).days)})
@@ -169,7 +169,13 @@ def rfm_table(request):
     kmeans.fit(rfm_scaled)
     rfm_data["Cluster_No"] = (kmeans.labels_ + 1)
     final_df = rfm_data.groupby(["Cluster_No"])[["Recency", "Frequency", "Monetary"]].mean()
-    return Response({"data":(list(final_df['Recency']), list(final_df['Frequency']), list(final_df["Monetary"]))})
+    seg = ["premium", "regular", "low"]
+    for i in range(3):
+        serializer = RFMTableSerializer(data={"rfm_segment":seg[i],"recency":final_df['Recency'][i+1], "frequency":final_df['Frequency'][i+1], "monetary":final_df['Monetary'][i+1]})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()'''
+    data = RFMTableSerializer(RFMTable.objects.all(), many=True).data
+    return Response({"data":data})
 
 def piechart(data,season):
   fig, ax = plt.subplots(figsize=(8, 6))
@@ -181,7 +187,7 @@ def piechart(data,season):
   plt.show()
 
 def plots():
-    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    df = pd.read_csv(r'market\jetson-sample-data.csv')
     temp = df['item_name'].value_counts()
     topItems = pd.DataFrame({'Item_Name': temp.index, 'Frequency': temp.values})
     sns.barplot(x = 'Item_Name',y = 'Frequency',data = topItems.head(10))
@@ -266,7 +272,7 @@ def highest_selling_item_cost(df):
 
 @api_view(['GET'])
 def get_stats(request):
-    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    df = pd.read_csv(r'market\jetson-sample-data.csv')
     avg_cust_buy = average_customer_buy(df)
     avg_order_cost = average_order_cost(df)
     highest_selling_item_cst = highest_selling_item_cost(df)
