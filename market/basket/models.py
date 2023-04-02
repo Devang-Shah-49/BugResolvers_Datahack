@@ -117,11 +117,11 @@ class MarketBasketCharts(models.Model):
         return self.chart_name
     
 class AssociationRules(models.Model):
-    consequent = models.CharField(max_length=100)
+    consequent = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    antecedents = models.CharField(max_length=100,)
+    antecedents = models.JSONField(max_length=100,)
     confidence = models.FloatField()
 
     def __str__(self):
-        return self.rule_consequent
+        return self.confidence

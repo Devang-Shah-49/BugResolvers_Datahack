@@ -2,8 +2,8 @@ import pandas as pd
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sklearn.cluster import KMeans
-from .serializers import AssociationRulesSerializer, UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
-from .models import AssociationRules, User, Product, Order, OrderItem, Coupon
+from .serializers import AssociationRulesSerializer, MarketBasketChartsSerializer, UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
+from .models import AssociationRules, MarketBasketCharts, User, Product, Order, OrderItem, Coupon
 
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -231,10 +231,43 @@ def plots():
 
 @api_view(['GET'])
 def get_data(request):
-    end = analyse()
+    '''end = analyse()
     for i in range(len(end["antecedents"])):
-        serializer = AssociationRulesSerializer(data={"antecedents":end["antecedents"][i], "consequents":end["consequents"][i], "confidence":end["confidence"][i]})
-        if serializer.is_valid():
-            serializer.save()
+        serializer = AssociationRulesSerializer(data={"antecedents":list(end["antecedents"][i]), "consequent":list(end["consequents"][i]), "confidence":end["confidence"][i]})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()'''
     rules = AssociationRulesSerializer(AssociationRules.objects.all(), many=True).data
     return Response({"rules":rules})
+
+@api_view(['GET'])
+def get_charts(request):
+    #plots()
+    charts = MarketBasketChartsSerializer(MarketBasketCharts.objects.all(), many=True).data
+    return Response({"message":charts})
+
+def average_customer_buy(df):
+  customer_spending = df.groupby('client_id')['price'].sum()
+  df2 = pd.DataFrame(customer_spending)
+  avg_cust_buy = df2['price'].sum() / len(df2)
+  return avg_cust_buy
+
+def average_order_cost(df):
+  particuar_order_count = df.groupby('order_id')['price'].sum()
+  df3 = pd.DataFrame(particuar_order_count)
+  avg_order_cost = df3['price'].sum() / len(df3)
+  return avg_order_cost
+
+def highest_selling_item_cost(df):
+  item_price = df.groupby('item_name')['price'].sum()
+  df1 = pd.DataFrame(item_price)
+  new = df1.sort_values(by=['price'],ascending=False)
+  x = new.iloc[[0]]
+  return x
+
+@api_view(['GET'])
+def get_stats(request):
+    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    avg_cust_buy = average_customer_buy(df)
+    avg_order_cost = average_order_cost(df)
+    highest_selling_item_cst = highest_selling_item_cost(df)
+    return Response({"avg_cust_buy":avg_cust_buy, "avg_order_cost":avg_order_cost, "highest_selling_item_cost":highest_selling_item_cst["price"][0]})
