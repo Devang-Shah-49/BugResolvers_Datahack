@@ -1,7 +1,7 @@
 # BugResolvers_Datahack
 An Web and Analytics Application that can be use dby companies to perform market basket analysis to obtain buying trends, send mails to certain customers as per their buying patterns and contains a ChatGPT based AI chatbot that learns from the input dataset and provides some valuable inputs.
 
-# Contribution Guidelines
+#Guidelines
 There are 4 branches
 - main
 - apriori
