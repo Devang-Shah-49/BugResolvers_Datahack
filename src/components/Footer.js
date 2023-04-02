@@ -4,7 +4,7 @@ const Footer = ({logo}) => {
   return (
     <div id="contact" className="flex flex-row flex-wrap items-center justify-around p-10">
       <a href="/" className="w-1/2 pl-5 mb-2 lg:visible lg:w-auto lg:pl-0 lg:mb-0">
-        <img width="70%" src={logo} alt="logo"/>
+        <img width="25%" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-app-icon-food-explorer-design-template-8ae900e41ccbc0a2e1b48a85d239e389_screen.jpg?ts=1585237320" alt="logo" />
       </a>
       <div className="flex items-center justify-around w-2/3 pt-5 lg:pt-0 lg:w-1/3 ">
         <a href="#">
@@ -18,7 +18,7 @@ const Footer = ({logo}) => {
         </a>
       </div>
       <div className="mt-10 text-lg text-blue-800 lg:mt-0">
-          Copyright 2021 Bella Onojie
+          Copyright Food Explorer - All rights reserved
       </div>
     </div>
   );

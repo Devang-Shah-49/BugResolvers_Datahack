@@ -30,9 +30,9 @@ function App() {
             </Route> */}
             <Route path="*" element={<Navigate replace to="/landing" />} />
           </Routes>          
-          <h1>User Dashboard </h1>
+          {/* <h1>User Dashboard </h1>
           <UserChart/>
-          <PopChat/>
+          <PopChat/> */}
         </Router>
     </div>
   );

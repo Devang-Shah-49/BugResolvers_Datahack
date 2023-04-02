@@ -15,8 +15,8 @@ function Landing() {
   const data = {
     hero:{
       appType: 'Food app',
-      tagLine: 'Why stay hungry when you can order from Bella Onojie',
-      description: 'Download the bella onoje’s food app now on',
+      tagLine: 'Why stay hungry when you can order from Food Explorer',
+      description: 'Download the food explorer’s app now on',
       mainActionText: 'Playstore',
       extraActionText: 'App Store',
     },
@@ -29,7 +29,7 @@ function Landing() {
     },
     step2: {
       title: 'Explore while shopping',
-      heading: 'Shop for your favorites meal as e dey hot.',
+      heading: 'Shop for your favorites meals.',
       description: 'Shop for your favorite meals or drinks and enjoy while doing it.',
       img: Rectangle_4,
       alternate: true,

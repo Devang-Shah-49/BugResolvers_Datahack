@@ -30,7 +30,7 @@ const Navbar = ({logo}) => {
   return (
     <div className="flex flex-row items-center justify-between h-28">
       <a href="/" className="pl-7 logo lg:ml-10">
-        <img height="65%" width="65%" src={logo} alt="logo" />
+        <img height="25%" width="25%" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-app-icon-food-explorer-design-template-8ae900e41ccbc0a2e1b48a85d239e389_screen.jpg?ts=1585237320" alt="logo" />
       </a>
 
           {/* Mobile Nav */}
