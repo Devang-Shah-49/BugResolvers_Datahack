@@ -106,3 +106,22 @@ class Redemption(models.Model):
 
     def __str__(self):
         return self.coupon.code
+    
+class MarketBasketCharts(models.Model):
+    chart_name = models.CharField(max_length=100,)
+    chart_created_at = models.DateTimeField(auto_now_add=True)
+    chart_updated_at = models.DateTimeField(auto_now=True)
+    chart_image = models.ImageField(upload_to='charts/', blank=True, null=True)
+
+    def __str__(self):
+        return self.chart_name
+    
+class AssociationRules(models.Model):
+    consequent = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    antecedents = models.CharField(max_length=100,)
+    confidence = models.FloatField()
+
+    def __str__(self):
+        return self.rule_consequent

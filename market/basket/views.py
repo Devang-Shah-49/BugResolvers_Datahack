@@ -1,8 +1,9 @@
 import pandas as pd
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
-from .models import User, Product, Order, OrderItem, Coupon
+from sklearn.cluster import KMeans
+from .serializers import AssociationRulesSerializer, UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
+from .models import AssociationRules, User, Product, Order, OrderItem, Coupon
 
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -86,8 +87,154 @@ def send_codes(request):
             'email_subject': 'Coupon Code for your next order!',
             'email_body': f'Your coupon code is {coupon.code} and it is valid till {coupon.expiry_date}.'
         }
-        send_email(data)
+        #send_email(data)
+        #gpt_query("Which items have revenue greater than $200?")
         sent = 1
         if sent == 1:
             return Response({"Inactive Count":f"{len(inactive_users)}", "Sent":f"{sent}"})
     return Response({"success":"success"})
+
+
+# !pip install langchain
+# !pip install duckdb
+# !pip install unstructured
+# !pip install chromadb
+# !pip install BeautifulSoup4
+# !pip install openai
+import csv
+import numpy as np
+import pandas as pd
+from mlxtend.frequent_patterns import apriori, association_rules
+from langchain.chains import VectorDBQA
+from langchain.vectorstores import Chroma
+from langchain.chat_models import ChatOpenAI
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.document_loaders.unstructured import UnstructuredFileLoader 
+import plotly.graph_objects as go
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+def gpt_query(question):
+#   loader = UnstructuredFileLoader(file_path=r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\sales_data_preprocessed.txt')
+#   documents = loader.load()
+#   documents = loader.load()
+  embeddings = OpenAIEmbeddings(openai_api_key="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")
+#   text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+#   texts = text_splitter.split_documents(documents)
+#   db = Chroma.from_documents(texts, embeddings,persist_directory = r'C:/Users/savla/DjangoProjects/BugResolvers_Datahack/market/devang')
+#   db.persist()
+  vectordb = Chroma(persist_directory=r'C:/Users/savla/DjangoProjects/BugResolvers_Datahack/market/devang',embedding_function=embeddings)
+  qa = VectorDBQA.from_chain_type(llm=ChatOpenAI(openai_api_key="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"), chain_type="stuff", vectorstore=vectordb, k=10)
+  return str(qa.run(question))
+
+@api_view(['POST'])
+def get_query(request):
+    question = request.data['question']
+    return Response({"answer":gpt_query(question)})
+
+def num(x):
+    if x <= 0:
+        return 0
+    elif x >=1:
+        return 1
+
+def analyse():
+    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    data_apr = df.groupby(["order_id", "item_name"])[["quantity"]].sum().unstack().reset_index().fillna(0).set_index("order_id")
+    basket_new = data_apr["quantity"].applymap(num)
+    apr = apriori(basket_new, min_support = 0.02, use_colnames = True)
+    apr = apr.sort_values(by = "support", ascending = False)
+    end = association_rules(apr, metric = "lift", min_threshold = 1)
+    end = end.sort_values(by = "confidence", ascending = False)
+    return end
+
+@api_view(['GET'])
+def rfm_table(request):
+    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    today = datetime.datetime.today()
+    df["date"] = pd.to_datetime(df["date"])
+    rec_table = df.groupby(["client_id"]).agg({"date": lambda x: ((today - x.max()).days)})
+    rec_table.columns = ["Recency"]
+    freq_table = df.drop_duplicates(subset = "order_id").groupby(["client_id"])[["order_id"]].count()
+    freq_table.columns = ["Frequency"]
+    df["Total_Price"] = df["price"]
+    monetary_table = df.groupby(["client_id"])[["Total_Price"]].sum()
+    monetary_table.columns = ["Monetary"]
+    rfm_data = pd.concat([rec_table, freq_table, monetary_table], axis = 1)
+    scaler = StandardScaler()
+    rfm_scaled = scaler.fit_transform(rfm_data)
+    kmeans = KMeans(n_clusters = 3)
+    kmeans.fit(rfm_scaled)
+    rfm_data["Cluster_No"] = (kmeans.labels_ + 1)
+    final_df = rfm_data.groupby(["Cluster_No"])[["Recency", "Frequency", "Monetary"]].mean()
+    return Response({"data":(list(final_df['Recency']), list(final_df['Frequency']), list(final_df["Monetary"]))})
+
+def piechart(data,season):
+  fig, ax = plt.subplots(figsize=(8, 6))
+  colors = ['#ff9999','#66b3ff','#99ff99','#ffcc99', '#c2c2f0']
+  explode = (0.05, 0.05, 0.05, 0.05, 0.05)
+  ax.pie(data.head()['quantity'], labels=data.head()['item_name'], colors=colors, explode=explode, autopct='%1.1f%%', startangle=90)
+  ax.set_title(f"Top 5 Items - {season}", fontsize=14, fontweight='bold')
+  ax.legend(title="Items", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+  plt.show()
+
+def plots():
+    df = pd.read_csv(r'C:\Users\savla\DjangoProjects\BugResolvers_Datahack\market\jetson-sample-data.csv')
+    temp = df['item_name'].value_counts()
+    topItems = pd.DataFrame({'Item_Name': temp.index, 'Frequency': temp.values})
+    sns.barplot(x = 'Item_Name',y = 'Frequency',data = topItems.head(10))
+    plt.xticks(rotation = 90)
+    plt.show()
+    dateTime = df.groupby('date')['quantity'].sum()
+    df1 = pd.DataFrame(dateTime,columns=["quantity"])
+    grouped_df = df.groupby(['date'])['item_name'].agg(list).reset_index(name='items_sold')
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x = grouped_df.date , y = grouped_df.items_sold, mode = "markers"))
+    fig.update_layout(yaxis_title=None)
+    fig.show()
+    grouped_df['month'] = pd.to_datetime(grouped_df['date']).dt.month
+    grouped_df['Season'] = grouped_df['month'].apply(lambda x: 'Winter' if x in [1, 2, 12] else ('Spring' if x in [3, 4, 5] else ('Summer' if x in [6, 7, 8] else 'Fall')))
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x = grouped_df.Season , y = grouped_df.month , mode = "markers"))
+    fig.update_layout(yaxis_title=None)
+    fig.show()
+    grouped_df_freq = df.groupby(['date', 'item_name'])['quantity'].sum().reset_index()
+    grouped_df_freq['month'] = pd.to_datetime(grouped_df['date']).dt.month
+    grouped_df_freq['Season'] = grouped_df['month'].apply(lambda x: 'Winter' if x in [1, 2, 12] else ('Spring' if x in [3, 4, 5] else ('Summer' if x in [6, 7, 8] else 'Fall')))
+    new = grouped_df_freq.groupby(['item_name','Season'])['quantity'].sum().reset_index()
+    fall_df = new.loc[new['Season'] == 'Fall'].copy()
+    fall_df = fall_df.sort_values('quantity', ascending=False)
+    summer_df = new.loc[new['Season'] == 'Summer']
+    summer_df = summer_df.sort_values('quantity', ascending=False)
+    winter_df = new.loc[new['Season'] == 'Winter']
+    winter_df = winter_df.sort_values('quantity', ascending=False)
+    spring_df = new.loc[new['Season'] == 'Spring']
+    spring_df = spring_df.sort_values('quantity', ascending=False)
+    fall_df = new.loc[new['Season'] == 'Fall'].copy()
+    fall_df = fall_df.sort_values('quantity', ascending=False)
+    piechart(winter_df,"Winter")
+    piechart(summer_df,"Summer")
+    piechart(fall_df,"Fall")
+    piechart(spring_df,"Spring")
+    monthFreq = grouped_df_freq.groupby(['month'])['quantity'].sum()
+    monthFreq.to_dict()
+    month_list = list(monthFreq.items())
+    x_values = [x for x, y in month_list]
+    y_values = [y for x, y in month_list]
+    plt.plot(x_values, y_values)
+    plt.xlabel('Month')
+    plt.ylabel('Value')
+    plt.title('Line Chart')
+    plt.show()
+
+@api_view(['GET'])
+def get_data(request):
+    end = analyse()
+    for i in range(len(end["antecedents"])):
+        serializer = AssociationRulesSerializer(data={"antecedents":end["antecedents"][i], "consequents":end["consequents"][i], "confidence":end["confidence"][i]})
+        if serializer.is_valid():
+            serializer.save()
+    rules = AssociationRulesSerializer(AssociationRules.objects.all(), many=True).data
+    return Response({"rules":rules})
