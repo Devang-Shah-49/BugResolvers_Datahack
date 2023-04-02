@@ -17,3 +17,5 @@ venv.bak/
 .vscode
 
 jetson-sample-data.csv
+sales_data_preprocessed.txt
+devang/
