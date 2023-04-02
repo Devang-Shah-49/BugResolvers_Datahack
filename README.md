@@ -11,3 +11,6 @@ There are 4 branches
 The main branch is the central branch that is used to provide a brief about the project.
 Apriori branch contains the entire code relevant to market basket analysis with all the possible visualisations
 Backend branch is a django application and frontend is an React App.
+
+#AI Chat
+it is available at https://colab.research.google.com/drive/1bX_p_u6JfZN2XhpPRupqO68rjs4oS-Z_?usp=sharing 
