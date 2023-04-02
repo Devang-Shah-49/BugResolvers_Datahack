@@ -87,7 +87,7 @@ def send_codes(request):
             'email_subject': 'Coupon Code for your next order!',
             'email_body': f'Your coupon code is {coupon.code} and it is valid till {coupon.expiry_date}.'
         }
-        #send_email(data)
+        send_email(data)
         #gpt_query("Which items have revenue greater than $200?")
         sent = 1
         if sent == 1:
@@ -117,17 +117,17 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
 def gpt_query(question):
-#   loader = UnstructuredFileLoader(file_path='sales_data_preprocessed.txt')
-#   documents = loader.load()
-#   documents = loader.load()
-  embeddings = OpenAIEmbeddings(openai_api_key="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")
-#   text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-#   texts = text_splitter.split_documents(documents)
-#   db = Chroma.from_documents(texts, embeddings,persist_directory = 'devang')
-#   db.persist()
-  vectordb = Chroma(persist_directory='devang',embedding_function=embeddings)
-  qa = VectorDBQA.from_chain_type(llm=ChatOpenAI(openai_api_key="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"), chain_type="stuff", vectorstore=vectordb, k=10)
-  return str(qa.run(question))
+   loader = UnstructuredFileLoader(file_path='sales_data_preprocessed.txt')
+   documents = loader.load()
+   documents = loader.load()
+   embeddings = OpenAIEmbeddings(openai_api_key="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")
+   text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+   texts = text_splitter.split_documents(documents)
+   db = Chroma.from_documents(texts, embeddings,persist_directory = 'devang')
+   db.persist()
+   vectordb = Chroma(persist_directory='devang',embedding_function=embeddings)
+   qa = VectorDBQA.from_chain_type(llm=ChatOpenAI(openai_api_key="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"), chain_type="stuff", vectorstore=vectordb, k=10)
+   return str(qa.run(question))
 
 @api_view(['POST'])
 def get_query(request):
@@ -152,7 +152,7 @@ def analyse():
 
 @api_view(['GET'])
 def rfm_table(request):
-    '''df = pd.read_csv('jetson-sample-data.csv')
+    df = pd.read_csv('jetson-sample-data.csv')
     today = datetime.datetime.today()
     df["date"] = pd.to_datetime(df["date"])
     rec_table = df.groupby(["client_id"]).agg({"date": lambda x: ((today - x.max()).days)})
@@ -173,7 +173,7 @@ def rfm_table(request):
     for i in range(3):
         serializer = RFMTableSerializer(data={"rfm_segment":seg[i],"recency":final_df['Recency'][i+1], "frequency":final_df['Frequency'][i+1], "monetary":final_df['Monetary'][i+1]})
         if serializer.is_valid(raise_exception=True):
-            serializer.save()'''
+            serializer.save()
     data = RFMTableSerializer(RFMTable.objects.all(), many=True).data
     return Response({"data":data})
 
@@ -237,17 +237,17 @@ def plots():
 
 @api_view(['GET'])
 def get_data(request):
-    '''end = analyse()
+    end = analyse()
     for i in range(len(end["antecedents"])):
         serializer = AssociationRulesSerializer(data={"antecedents":list(end["antecedents"][i]), "consequent":list(end["consequents"][i]), "confidence":end["confidence"][i]})
         if serializer.is_valid(raise_exception=True):
-            serializer.save()'''
+            serializer.save()
     rules = AssociationRulesSerializer(AssociationRules.objects.all(), many=True).data
     return Response({"rules":rules})
 
 @api_view(['GET'])
 def get_charts(request):
-    #plots()
+    plots()
     charts = MarketBasketChartsSerializer(MarketBasketCharts.objects.all(), many=True).data
     return Response({"message":charts})
 
