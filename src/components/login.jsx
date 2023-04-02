@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-// import { appContext } from "../context";
+import { appContext } from "../context";
 // import AuthServices from "../services/AuthServices";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  // let navigate = useNavigate();
+  let navigate = useNavigate();
   // const { setUser, setToken, token } = useContext(appContext);
   // const [load, setLoad] = useState(false);
   const [json, setJson] = useState({
@@ -19,8 +19,11 @@ export default function Login() {
 
   console.log(json);
 
-  const handleClick = async () => {
+  const handleClick = async (e) => {
     console.log('logged in')
+    localStorage.setItem("appUser", e);
+    localStorage.setItem("isAuthorized", true);
+    navigate("/user");
     // setLoad(true);
     // await AuthServices.login(json)
     //   .then((res) => {
@@ -37,11 +40,11 @@ export default function Login() {
     //     console.log(e);
     //   });
   };
-  // useEffect(() => {
-  //   if (localStorage.getItem("isAuthorized")) {
-  //     navigate("/committee");
-  //   }
-  // }, [navigate]);
+  useEffect(() => {
+    if (localStorage.getItem("isAuthorized")) {
+      navigate("/user");
+    }
+  }, [navigate]);
 
   // console.log(token);
 

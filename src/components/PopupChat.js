@@ -1,9 +1,12 @@
 ﻿import React, { useState } from 'react'
 import "./PopupChat.css";
+import ApiService from "../services/api";
 
 import chatIcon from "../assets/chatIcon.png";
 
 export const PopChat = ( props ) => {
+  const [jawab, setJawab] = useState('');
+  const [qt, setQt] = useState('');
   let hide = {
     display: 'none',
   }
@@ -19,8 +22,16 @@ export const PopChat = ( props ) => {
   }
 
 const handleSend = e => {
-  const get = props.getMessage
-  get(textRef.current.value)
+  // const qt1 = props.getMessage
+  // qt1(textRef.current.value)
+  console.log('hello')
+  ApiService.post("http://localhost:8000/api/get_query", {
+    question: qt,
+  }).then((res) => {
+        console.log(res);
+        setJawab(res);
+      })
+    console.log('bye');
 }
 
   return (
@@ -39,7 +50,7 @@ const handleSend = e => {
       } */}
     </div>
     <div class="footer">
-      <input type="text"  ref={textRef} />
+      <input type="text" onChange={(e) => setQt(e.target.value)} ref={textRef} />
       <button onClick={handleSend}><i class="fa fa-paper-plane"></i></button>
     </div>
   </div>

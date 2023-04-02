@@ -23,8 +23,11 @@ export default function Signup() {
     setJson({ ...json, [name]: value });
   };
 
-  const handleClick = async () => {
+  const handleClick = async (e) => {
     console.log("signuped");
+    navigate('/user');
+    localStorage.setItem("appUser", e);
+    localStorage.setItem("isAuthorized", true);
     // setLoad(true);
     // await AuthServices.signup(json).then((res) => {
     //   setLoad(false);
@@ -53,11 +56,11 @@ export default function Signup() {
   //   });
   // };
 
-  // useEffect(() => {
-  //   if(localStorage.getItem('isAuthorized')){
-  //     navigate('/committee')
-  //   }
-  // }, [navigate])
+  useEffect(() => {
+    if(localStorage.getItem('isAuthorized')){
+      navigate('/user')
+    }
+  }, [navigate])
   
   // console.log(otpJson);
   return (

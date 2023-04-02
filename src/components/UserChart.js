@@ -1,8 +1,49 @@
-﻿import React from 'react'
+﻿import React, {useState, useEffect} from 'react'
+import ApiService from '../services/api';
+import Navbar from './Navbar';
+import Footer from './Footer';
 
 function UserChart() {
+  const [apr, setApr] = useState([]);
+  useEffect(()=>{
+    ApiService.get("http://127.0.0.1:8000/api/get_data").then((res) => {
+      // console.log(res[0].data.rules);
+      setApr(res[0].data.rules);
+      console.log(apr);
+  })},
+    []
+  );
   return (
     <div>
+    <Navbar></Navbar>
+
+    <div class="lg:w-2/3 w-full mx-auto overflow-auto">
+            <table class="table-auto w-full text-left whitespace-no-wrap">
+              <thead>
+                <tr>
+                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-300 rounded-tl rounded-bl">
+                    Antecedant
+                  </th>
+                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-300">
+                    Consequences
+                  </th>
+                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-300">
+                    Confidence
+                  </th></tr>
+              </thead>
+              <tbody>
+              {apr.map((item)=>( 
+                <tr>
+                  <td class="px-4 py-3">{item.antecedents}</td>
+                  <td class="px-4 py-3">{item.consequent}</td>
+                  <td class="px-4 py-3 text-lg text-gray-900">{item.confidence}</td>
+                </tr>
+              ))};
+              </tbody>
+            </table>
+          </div>
+
+
         <section className="text-gray-600 body-font">
   <div className="container px-5 py-24 mx-auto">
     <div className="flex flex-wrap -mx-4 -mb-10 text-center">
@@ -41,6 +82,7 @@ function UserChart() {
     </div>
   </div>
 </section>
+<Footer/>
     </div>
   )
 }

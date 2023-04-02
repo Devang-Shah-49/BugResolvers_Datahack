@@ -11,7 +11,7 @@ export default function UserPage() {
         <Navbar />
         <Widget/>
         <ChartsGrid/>
-        <TableRFM />
+        {/* <TableRFM /> */}
         <Footer/>
     </div>
   )

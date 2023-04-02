@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import ApiService from "../services/api";
 
-export default function TableRFM() {
+function TableRFM() {
+  const [res1, setRes1] = useState([]);
+  useEffect(()=>{
+    console.log("here");
+    ApiService.get("http://127.0.0.1:8000/api/get_rfm").then((res) => {
+        console.log(res)
+      setRes1(res);
+      console.log(res1);
+      console.log("there");
+  })},
+    []
+  );
   return (
     <div>
-    <hr></hr>
+      <hr></hr>
       <section class="text-gray-600 body-font">
         <div class="container px-5 pt-4 pb-24 mx-auto">
           <div class="flex flex-col text-center w-full my-10">
@@ -38,30 +50,41 @@ export default function TableRFM() {
               <tbody>
                 <tr>
                   <td class="px-4 py-3">Premium</td>
-                  <td class="px-4 py-3">5 Mb/s</td>
-                  <td class="px-4 py-3">15 GB</td>
-                  <td class="px-4 py-3 text-lg text-gray-900">Free</td>
+                  {/* <td class="px-4 py-3">{res.data.data[0]}</td> */}
+                  <td class="px-4 py-3">{res1[0][0]}</td>
+                  <td class="px-4 py-3">{res1[1][0]}</td>
+                  <td class="px-4 py-3 text-lg text-gray-900">{res1[2][0]}</td>
                   {/* <td class="w-10 text-center">
                     <input name="plan" type="radio" />
                   </td> */}
                 </tr>
                 <tr>
                   <td class="border-t-2 border-gray-300 px-4 py-3">Mediocre</td>
-                  <td class="border-t-2 border-gray-300 px-4 py-3">25 Mb/s</td>
-                  <td class="border-t-2 border-gray-300 px-4 py-3">25 GB</td>
+                  <td class="border-t-2 border-gray-300 px-4 py-3">
+                    {res1}
+                  </td>
+                  <td class="border-t-2 border-gray-300 px-4 py-3">
+                   { res1}
+                  </td>
                   <td class="border-t-2 border-gray-300 px-4 py-3 text-lg text-gray-900">
-                    $24
+                    {res1}
                   </td>
                   {/* <td class="border-t-2 border-gray-300 w-10 text-center">
                     <input name="plan" type="radio" />
                   </td> */}
                 </tr>
                 <tr>
-                  <td class="border-t-2 border-gray-300 px-4 py-3">Lower order</td>
-                  <td class="border-t-2 border-gray-300 px-4 py-3">36 Mb/s</td>
-                  <td class="border-t-2 border-gray-300 px-4 py-3">40 GB</td>
+                  <td class="border-t-2 border-gray-300 px-4 py-3">
+                    Lower order
+                  </td>
+                  <td class="border-t-2 border-gray-300 px-4 py-3">
+                    {res1}
+                  </td>
+                  <td class="border-t-2 border-gray-300 px-4 py-3">
+                    {res1}
+                  </td>
                   <td class="border-t-2 border-gray-300 px-4 py-3 text-lg text-gray-900">
-                    $50
+                    {res1}
                   </td>
                   {/* <td class="border-t-2 border-gray-300 w-10 text-center">
                     <input name="plan" type="radio" />
@@ -94,3 +117,5 @@ export default function TableRFM() {
     </div>
   );
 }
+
+export default TableRFM;
