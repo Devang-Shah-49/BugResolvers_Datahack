@@ -1,16 +1,13 @@
 # BugResolvers_Datahack
-An Web and Analytics Application that can be use dby companies to perform market basket analysis to obtain buying trends, send mails to certain customers as per their buying patterns and contains a ChatGPT based AI chatbot that learns from the input dataset and provides some valuable inputs.
+- A Web and Analytics Application that can be used by companies to perform market basket analysis to obtain buying trends, send mails to certain customers as per their buying patterns. 
+- The project also features a Langchain + ChatGPT based AI chatbot that learns from the input dataset and answers general queries about the dataset thus automating data analysis.
 
-#Guidelines
+## Guidelines
 There are 4 branches
-- main
-- apriori
-- backend
-- frontend
+- main: Provides a brief description about the project
+- apriori: Source code relevant to market basket analysis with all the possible visualisations
+- backend: Code for Django server
+- frontend: Code for React Dashboard
 
-The main branch is the central branch that is used to provide a brief about the project.
-Apriori branch contains the entire code relevant to market basket analysis with all the possible visualisations
-Backend branch is a django application and frontend is an React App.
-
-#AI Chat
-it is available at https://colab.research.google.com/drive/1bX_p_u6JfZN2XhpPRupqO68rjs4oS-Z_?usp=sharing 
+## Code for Langchain + ChatGPT based AI chatbot
+https://colab.research.google.com/drive/1bX_p_u6JfZN2XhpPRupqO68rjs4oS-Z_?usp=sharing 
